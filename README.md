@@ -89,9 +89,9 @@ memed keys add <WALLET-NAME>
 memed keys add <WALLET-NAME> --recover
 ```
 
-## Instructions for post-genesis validators
 
-### Create the validator
+## Create the validator
+
 Note : All validators set commission to at least 5%
 Create your validator using the following transaction:
 
@@ -116,18 +116,13 @@ memed tx staking create-validator \
 
 
 ### Backup critical files
+
 ```bash:
 priv_validator_key.json
 ```
 
 
 ## Starting memed as a service
-
-```bash:
-sudo vi /etc/systemd/system/memed.service
-```
-
-#### Add following to the file, make sure to change ubuntu to the correct user.
 
 ```
 tee /etc/systemd/system/memed.service > /dev/null <<EOF
@@ -178,6 +173,7 @@ memed tx distribution withdraw-rewards <Operator Address> --from <WALLET-NAME> -
 ```
 
 Your validator <Operator Address> : memevaloperxxxxxxxxxxxx
+
 
 #### Unjail validator
 ```bash:
