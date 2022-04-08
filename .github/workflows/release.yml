@@ -66,7 +66,7 @@ jobs:
       
       - name: Set variables
         run: |
-          echo "VERSION=$(git describe --always | sed 's/^v//')" >> $GITHUB_ENV
+          Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$(git describe --always | sed 's/^v//')"
 
       - name: $env:VERSION
         uses: actions/setup-go@v3
