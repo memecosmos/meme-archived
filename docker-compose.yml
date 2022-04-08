@@ -13,3 +13,4 @@ services:
     environment:
       - GAS_LIMIT=${GAS_LIMIT:-100000000}
       - STAKE_TOKEN=${STAKE_TOKEN:-ustake}
+
