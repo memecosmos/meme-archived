@@ -1,6 +1,7 @@
 # docker build . -t MeMeCosmos/meme:latest
 # docker run --rm -it MeMeCosmos/meme:latest /bin/sh
 FROM golang:1.17.3-alpine AS build-env
+ARG arch=x86_64
 
 # this comes from standard alpine nightly file
 #  https://github.com/rust-lang/docker-rust-nightly/blob/master/alpine3.12/Dockerfile
