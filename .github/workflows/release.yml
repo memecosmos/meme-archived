@@ -105,8 +105,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: $env:VERSION
-          release_name: $env:VERSION
+          tag_name: ${{ matrix.version }}
+          release_name: ${{ matrix.version }}
 
       - name: Upload release assets
         uses: csexton/release-asset-action@v2
