@@ -1,19 +1,19 @@
 # docker build . -t MeMeCosmos/meme:latest
 # docker run --rm -it MeMeCosmos/meme:latest /bin/sh
-FROM golang:1.17-alpine3.15 AS go-builder
-ARG arch=x86_64
+FROM golang:1.17.3-alpine AS build-env
 
 # this comes from standard alpine nightly file
 #  https://github.com/rust-lang/docker-rust-nightly/blob/master/alpine3.12/Dockerfile
 # with some changes to support our toolchain, etc
-RUN set -eux; apk add --no-cache ca-certificates build-base;
+ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3 ca-certificates build-base git
+RUN set -eux; apk add --no-cache $PACKAGES;
 
-RUN apk add git
 # NOTE: add these to run with LEDGER_ENABLED=true
 # RUN apk add libusb-dev linux-headers
 
-WORKDIR /code
-COPY . /code/
+WORKDIR /go/src/github.com/MeMeCosmos/meme
+
+COPY . .
 
 # See https://github.com/CosmWasm/wasmvm/releases
 ADD https://github.com/CosmWasm/wasmvm/releases/download/v1.0.0-beta10/libwasmvm_muslc.aarch64.a /lib/libwasmvm_muslc.aarch64.a
@@ -25,29 +25,27 @@ RUN sha256sum /lib/libwasmvm_muslc.x86_64.a | grep 2f44efa9c6c1cda138bd1f46d8d53
 RUN cp /lib/libwasmvm_muslc.${arch}.a /lib/libwasmvm_muslc.a
 
 # force it to use static lib (from above) not standard libgo_cosmwasm.so file
-RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build
-RUN file /code/bin/memed
-#RUN echo "Ensuring binary is statically linked ..." \
-#  && (file /code/bin/memed | grep "statically linked")
+RUN LEDGER_ENABLED=false BUILD_TAGS=muslc GOOS=linux GOARCH=amd64 LEDGER_ENABLED=true make build
 
-# --------------------------------------------------------
-FROM alpine:3.15
+FROM alpine:edge
 
-COPY --from=go-builder /code/bin/memed /usr/bin/memed
+RUN apk add --update ca-certificates
+WORKDIR /root
 
-COPY docker/* /opt/
-RUN chmod +x /opt/*.sh
+# Install bash
+RUN apk add --no-cache bash
 
-WORKDIR /opt
+COPY --from=build-env /go/src/github.com/MeMeCosmos/meme/build/meme /usr/bin/memed
+
 
 # rest server
-EXPOSE 1317
+EXPOSE 1317 9090
 # tendermint p2p
 EXPOSE 26656
 # tendermint rpc
 EXPOSE 26657
 
-CMD ["/usr/bin/memed", "version"]
+CMD ["memed", "version"]
 
 
 
