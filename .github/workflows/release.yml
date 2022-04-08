@@ -1,4 +1,4 @@
-name: Compile MeMe
+name: Compile MeMe & zip
 
 # Controls when the action will run.
 #  This workflow runr on pushes to master & every Pull Requests. (Or when manually triggered)
@@ -38,9 +38,42 @@ jobs:
           go mod download
           cd cmd/memed
           go build .
+          
+
+      - uses: papeloto/action-zip@v1
+        with:
+          files: cmd/memed/memed
+          dest: memed_${{ matrix.targetos }}_${{ matrix.arch }}.zip
+
       - uses: actions/upload-artifact@v3.0.0
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          name: memed ${{ matrix.targetos }} ${{ matrix.arch }}
-          path: ./memed
-          asset_content_type: application/octet-stream
+          name: memed_${{ matrix.targetos }}_${{ matrix.arch }}
+          path: memed_${{ matrix.targetos }}_${{ matrix.arch }}.zip
+          
+
+  release-on-github:
+    name: Release on Github
+    needs: build-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Display structure of downloaded files
+        run: ls -aslR
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{github.ref_name}}
+          release_name: ${{github.ref_name}}
+
+      - name: Upload release assets
+        uses: csexton/release-asset-action@v2
+        with:
+          pattern: "**/*.zip"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-url: ${{ steps.create_release.outputs.upload_url }}
