@@ -38,7 +38,7 @@ jobs:
           go mod download
           cd cmd/memed
           go build .
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3.0.0
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           name: memed ${{ matrix.targetos }} ${{ matrix.arch }}
