@@ -36,7 +36,7 @@ WORKDIR /root
 # Install bash
 RUN apk add --no-cache bash
 
-COPY --from=build-env /go/src/github.com/MeMeCosmos/meme/build/meme /usr/bin/memed
+COPY --from=build-env /go/src/github.com/MeMeCosmos/meme/build/memed /usr/bin/memed
 
 
 # rest server
