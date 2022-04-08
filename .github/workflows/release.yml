@@ -1,4 +1,4 @@
-name: Release
+name: MeMe Release
 
 # Controls when the action will run.
 #  This workflow runr on pushes to master & every Pull Requests. (Or when manually triggered)
@@ -61,20 +61,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Unshallow
+      - name: Fetch tags
         run: git fetch --prune --unshallow --tags --force
-      
+
       - name: Set variables
         run: |
-          Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$(git describe --always | sed 's/^v//')"
+          echo "VER=$(git describe --always | sed 's/^v//')" >> $GITHUB_ENV
 
-      - name: $env:VERSION
+      - name: "$VER"
         uses: actions/setup-go@v3
         with:
           go-version: '^1.18'
         env:
           GOOS: ${{ matrix.targetos }}
           GOARCH: ${{ matrix.arch }}
+          VER: ${{ meme.version }}
 
       - name: Compile MeMe
         run: |
@@ -85,12 +86,12 @@ jobs:
       - uses: papeloto/action-zip@v1
         with:
           files: cmd/memed/memed
-          dest: memed_$env:VERSION_${{ matrix.targetos }}_${{ matrix.arch }}.zip
+          dest: memed_${{ meme.version }}_${{ matrix.targetos }}_${{ matrix.arch }}.zip
 
       - uses: actions/upload-artifact@v3.0.0
         with:
-          name: memed_$env:VERSION_${{ matrix.targetos }}_${{ matrix.arch }}
-          path: memed_$env:VERSION_${{ matrix.targetos }}_${{ matrix.arch }}.zip
+          name: memed_${{ meme.version }}_${{ matrix.targetos }}_${{ matrix.arch }}
+          path: memed_${{ meme.version }}_${{ matrix.targetos }}_${{ matrix.arch }}.zip
           
       - name: Download artifacts
         uses: actions/download-artifact@v2
