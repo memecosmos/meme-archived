@@ -33,7 +33,7 @@ jobs:
           GOOS: ${{ matrix.targetos }}
           GOARCH: ${{ matrix.arch }}
 
-      - name: Compile osmosis
+      - name: Compile MeMe
         run: |
           go mod download
           cd cmd/memed
