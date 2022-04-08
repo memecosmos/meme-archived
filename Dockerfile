@@ -48,3 +48,6 @@ EXPOSE 26656
 EXPOSE 26657
 
 CMD ["/usr/bin/memed", "version"]
+
+
+
