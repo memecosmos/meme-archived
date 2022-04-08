@@ -15,6 +15,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+        steps:
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: '0'
+
+      - name: Bump version and push new tag
+        id: bump_version
+        uses: anothrNick/github-tag-action@1.17.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          RELEASE_BRANCHES: production
+
+      - name: Save new version number result into file
+        shell: bash
+        run: |
+          echo ${{ steps.bump_version.outputs.tag }} > new_version.txt
+      - name: Upload version number for further use
+        uses: actions/upload-artifact@v1
+        with:
+          name: new_version
+          path: new_version.txt
+
     strategy:
       matrix:
         arch: [amd64]
