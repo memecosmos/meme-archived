@@ -61,6 +61,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Download version number from bump-version-push-tag
+        uses: actions/download-artifact@v1
+        with:
+          name: new_version
+
+      - name: Create version number variable
+        id: vars
+        run: echo ::set-output name=meme_version::$(cat new_version/new_version.txt)
+      
       - name: Fetch tags
         run: git fetch --prune --unshallow --tags --force
 
@@ -68,14 +77,13 @@ jobs:
         run: |
           echo "VER=$(git describe --always | sed 's/^v//')" >> $GITHUB_ENV
 
-      - name: ${{ steps.bump_version.outputs.tag }}
+      - name: ${{ steps.vars.outputs.meme_version }}
         uses: actions/setup-go@v3
         with:
           go-version: '^1.18'
         env:
           GOOS: ${{ matrix.targetos }}
           GOARCH: ${{ matrix.arch }}
-          VER: ${{ matrix.version }}
 
       - name: Compile MeMe
         run: |
@@ -86,12 +94,12 @@ jobs:
       - uses: papeloto/action-zip@v1
         with:
           files: cmd/memed/memed
-          dest: memed_${{ matrix.version }}_${{ matrix.targetos }}_${{ matrix.arch }}.zip
+          dest: memed_${{ steps.vars.outputs.meme_version }}_${{ matrix.targetos }}_${{ matrix.arch }}.zip
 
       - uses: actions/upload-artifact@v3.0.0
         with:
-          name: memed_${{ matrix.version }}_${{ matrix.targetos }}_${{ matrix.arch }}
-          path: memed_${{ matrix.version }}_${{ matrix.targetos }}_${{ matrix.arch }}.zip
+          name: memed_${{ steps.vars.outputs.meme_version }}_${{ matrix.targetos }}_${{ matrix.arch }}
+          path: memed_${{ steps.vars.outputs.meme_version }}_${{ matrix.targetos }}_${{ matrix.arch }}.zip
           
       - name: Download artifacts
         uses: actions/download-artifact@v2
@@ -105,8 +113,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ matrix.version }}
-          release_name: ${{ matrix.version }}
+          tag_name: ${{ steps.vars.outputs.meme_version }}
+          release_name: ${{ steps.vars.outputs.meme_version }}
 
       - name: Upload release assets
         uses: csexton/release-asset-action@v2
