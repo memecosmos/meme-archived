@@ -1,7 +1,5 @@
 name: MeMe Release
 
-# Controls when the action will run.
-#  This workflow runr on pushes to master & every Pull Requests. (Or when manually triggered)
 on:
   pull_request:
   push:
@@ -106,6 +104,22 @@ jobs:
 
       - name: Display structure of downloaded files
         run: ls -aslR
+
+
+  meme-happy-release:
+    needs: build-release
+    runs-on: ubuntu-latest
+    name: MeMe Release on Github
+    steps:
+    
+      - name: Download version number from bump-version-push-tag
+        uses: actions/download-artifact@v1
+        with:
+          name: new_version
+
+      - name: Create version number variable
+        id: vars
+        run: echo ::set-output name=meme_version::$(cat new_version/new_version.txt)
 
       - name: Create release
         id: create_release
