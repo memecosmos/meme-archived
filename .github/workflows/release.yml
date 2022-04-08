@@ -13,7 +13,7 @@ on:
 
 # This workflow makes x86_64 binaries for mac, windows, and linux.
 jobs:
-  build:
+  version-push-tag:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,6 +39,10 @@ jobs:
           name: new_version
           path: new_version.txt
 
+
+  build-release:
+    needs: version-push-tag
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         arch: [amd64]
