@@ -35,7 +35,7 @@ jobs:
           
           
 # now uploads genesis.json and bin
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3.0.0
         with:
           name: memed ${{ matrix.targetos }} ${{ matrix.arch }}
           path: cmd/memed
