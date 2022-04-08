@@ -50,12 +50,6 @@ jobs:
           name: memed_${{ matrix.targetos }}_${{ matrix.arch }}
           path: memed_${{ matrix.targetos }}_${{ matrix.arch }}.zip
           
-
-  release-on-github:
-    name: Release on Github
-    needs: jobs
-    runs-on: ubuntu-latest
-    steps:
       - name: Download artifacts
         uses: actions/download-artifact@v2
 
