@@ -1,29 +1,46 @@
-name: release binary
+name: Compile MeMe
 
+# Controls when the action will run.
+#  This workflow runr on pushes to master & every Pull Requests. (Or when manually triggered)
 on:
-  release:
-    types: [created]
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
+# This workflow makes x86_64 binaries for mac, windows, and linux.
 jobs:
-  release-alpine-static:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64]
+        targetos: [darwin, linux]
+        include:
+          - targetos: darwin
+            arch: arm64
+#        include:
+#          - targetos: windows
+#            arch: amd64
+    name: meme ${{ matrix.arch }} for ${{ matrix.targetos }}
     steps:
       - uses: actions/checkout@v2
-      - name: Docker compose
-        run: STAKE_TOKEN="umeme" docker-compose up -d
-      - name: Copy binary
-        run: docker cp memed_node_1:/usr/bin/memed ./memed
-      - name: Get release
-        id: get_release
-        uses: bruceadams/get-release@v1.2.3
+      - uses: actions/setup-go@v2.1.4
+        with:
+          go-version: '^1.18'
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Upload release binary
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GOOS: ${{ matrix.targetos }}
+          GOARCH: ${{ matrix.arch }}
+
+      - name: Compile osmosis
+        run: |
+          go mod download
+          cd cmd/memed
+          go build .
+      - uses: actions/upload-artifact@v2
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./memed
-          asset_name: memed
+          name: memed ${{ matrix.targetos }} ${{ matrix.arch }}
+          path: ./memed
           asset_content_type: application/octet-stream
