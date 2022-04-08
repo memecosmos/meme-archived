@@ -68,7 +68,7 @@ jobs:
         run: |
           echo "VER=$(git describe --always | sed 's/^v//')" >> $GITHUB_ENV
 
-      - name: "$VER"
+      - name: ${{ steps.bump_version.outputs.tag }}
         uses: actions/setup-go@v3
         with:
           go-version: '^1.18'
