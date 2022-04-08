@@ -85,13 +85,14 @@ jobs:
 
       - name: Compile MeMe
         run: |
-          go mod download
-          cd cmd/memed
-          go build .
+          GOARCH=${{ matrix.go-arch }} LEDGER_ENABLED=true make build
+#          go mod download
+#          cd cmd/memed
+#          go build .
           
       - uses: papeloto/action-zip@v1
         with:
-          files: cmd/memed/memed
+          files: build/memed
           dest: memed_${{ steps.vars.outputs.meme_version }}_${{ matrix.targetos }}_${{ matrix.arch }}.zip
 
       - uses: actions/upload-artifact@v3.0.0
