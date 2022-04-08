@@ -53,7 +53,7 @@ jobs:
 
   release-on-github:
     name: Release on Github
-    needs: build-release
+    needs: jobs
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
