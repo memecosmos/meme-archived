@@ -96,8 +96,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{github.ref_name}}
-          release_name: ${{github.ref_name}}
+          tag_name: ${{ steps.bump_version.outputs.tag }}
+          release_name: ${{ steps.bump_version.outputs.tag }}
 
       - name: Upload release assets
         uses: csexton/release-asset-action@v2
