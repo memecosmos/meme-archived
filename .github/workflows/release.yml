@@ -86,7 +86,8 @@ jobs:
       - name: Compile MeMe
         run: |
           GOARCH=${{ matrix.go-arch }} LEDGER_ENABLED=true make build
-#          go mod download
+          go mod download
+          make build
 #          cd cmd/memed
 #          go build .
           
