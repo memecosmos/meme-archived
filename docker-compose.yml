@@ -5,7 +5,7 @@ services:
       context: .
       args:
         - arch=${ARCH:-x86_64}
-    command: ./docker/setup_and_run.sh meme1z0cftgdf0s5u40gqmr5nwax2a74fu53m3vpfct
+    command: ./setup_and_run.sh meme1z0cftgdf0s5u40gqmr5nwax2a74fu53m3vpfct
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p
