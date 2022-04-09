@@ -49,7 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Docker compose
-        run: STAKE_TOKEN="umeme docker-compose up -d
+        run: STAKE_TOKEN="umeme" docker-compose up -d
         
       - name: Copy binary
         run: docker cp meme_node_1:/usr/bin/memed ./memed
