@@ -43,26 +43,26 @@ jobs:
 
 
 
-  docker-compose:
-    needs: version-tag
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Docker compose
-        run: STAKE_TOKEN="umeme" docker-compose up -d
-        
-      - name: Copy binary
-        run: docker cp meme_node_1:/usr/bin/memed ./memed
-
-      - name: Upload release binary
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./memed
-          asset_name: memed
-          asset_content_type: application/octet-stream
+#  docker-compose:
+#    needs: version-tag
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Docker compose
+#        run: STAKE_TOKEN="umeme" docker-compose up -d
+#        
+#      - name: Copy binary
+#        run: docker cp meme_node_1:/usr/bin/memed ./memed
+#
+#      - name: Upload release binary
+#        uses: actions/upload-release-asset@v1.0.2
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
+#        with:
+#          upload_url: ${{ steps.get_release.outputs.upload_url }}
+#          asset_path: ./memed
+#          asset_name: memed
+#          asset_content_type: application/octet-stream
 
 
   build-release:
@@ -132,8 +132,8 @@ jobs:
     name: MeMe Release on Github
     steps:
     
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v2
 
       - name: Download version number from bump-version-push-tag
         uses: actions/download-artifact@v1
