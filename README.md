@@ -1,4 +1,5 @@
 ## MeMe Chain
+![c11](https://raw.githubusercontent.com/MeMeCosmos/assetlists/main/logo/meme-banner.svg)
 
 
 ### How to Join MeMe Mainnet
